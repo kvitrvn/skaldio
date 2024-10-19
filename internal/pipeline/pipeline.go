@@ -16,11 +16,13 @@ func process(ctx *gin.Context) {
 
 	if err := ctx.Bind(body); err != nil {
 		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
+		return
 	}
 
-	ws, err := ci.NewWorkspace("./tmp", body.URL, "master")
+	ws, err := ci.NewWorkspace("./tmp", body.URL, "main")
 	if err != nil {
 		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{

@@ -6,4 +6,5 @@ type WorkspaceInterface interface {
 	Commit() string
 	Dir() string
 	Env() []string
+	LoadPipeline() (*Pipeline, error)
 }

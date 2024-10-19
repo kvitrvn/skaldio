@@ -64,3 +64,8 @@ func (ws *Workspace) Dir() string {
 func (ws *Workspace) Env() []string {
 	return ws.env
 }
+
+// LoadPipeline checks and parse the yaml CI file
+func (ws *Workspace) LoadPipeline() (*Pipeline, error) {
+	panic("not implemented yet")
+}
