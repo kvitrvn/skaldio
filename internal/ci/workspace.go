@@ -33,6 +33,9 @@ func NewWorkspace(root, url, branch string) (*Workspace, error) {
 		Depth:             1,
 	})
 	if err != nil {
+		if err := os.RemoveAll(dir); err != nil {
+			return nil, err
+		}
 		return nil, err
 	}
 
@@ -91,4 +94,9 @@ func (ws *Workspace) ExecuteCmd(ctx context.Context, cmd string, args []string) 
 	command.Env = append(command.Environ(), ws.Env()...)
 
 	return command.CombinedOutput()
+}
+
+// Shutdown execute some logic after the run ended
+func (ws *Workspace) Shutdown() error {
+	return os.RemoveAll(ws.dir)
 }

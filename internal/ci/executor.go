@@ -45,10 +45,18 @@ func (e *Executor) Run(ctx context.Context, pipeline Pipeline) (string, error) {
 			output.Write(out)
 			output.WriteRune('\n')
 			if err != nil {
+				if err := e.ws.Shutdown(); err != nil {
+					return "", err
+				}
 				return output.String(), err
 			}
 		}
 	}
+
+	if err := e.ws.Shutdown(); err != nil {
+		return "", err
+	}
+
 	return output.String(), nil
 }
 

@@ -32,6 +32,7 @@ func process(ctx *gin.Context) {
 
 	executor := ci.NewExecutor(ws)
 	output, err := executor.RunDefault(ctx)
+
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"repository":          body.URL,
