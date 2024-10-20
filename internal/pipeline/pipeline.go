@@ -9,7 +9,8 @@ import (
 )
 
 type processRequest struct {
-	URL string `json:"url"`
+	URL    string `json:"url"`
+	Branch string `json:"branch"`
 }
 
 func process(ctx *gin.Context) {
@@ -20,16 +21,25 @@ func process(ctx *gin.Context) {
 		return
 	}
 
-	ws, err := ci.NewWorkspace("./tmp", body.URL, "main")
+	ws, err := ci.NewWorkspace("./tmp", body.URL, body.Branch)
 	if err != nil {
-		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+			"repository": body.URL,
+			"result":     err.Error(),
+		})
 		return
 	}
 
 	executor := ci.NewExecutor(ws)
 	output, err := executor.RunDefault(ctx)
 	if err != nil {
-		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+			"repository":          body.URL,
+			"branch":              ws.Branch(),
+			"commit":              ws.Commit(),
+			"workspace_directory": ws.Dir(),
+			"result":              err.Error(),
+		})
 		return
 	}
 

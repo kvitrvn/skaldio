@@ -16,4 +16,4 @@ bench:
 	@go test -bench=. -benchmem ./...
 
 test-pipeline:
-	curl -X POST -H "Content-Type: application/json" --data "{\"url\":\"git@github.com:kvitrvn/skaldio.git\"}" http://127.0.0.1:3000/p/
+	curl -X POST -H "Content-Type: application/json" --data '{"url":"git@github.com:kvitrvn/skaldio.git", "branch": "develop"}' http://127.0.0.1:3000/p/
