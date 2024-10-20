@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +26,18 @@ func process(ctx *gin.Context) {
 		return
 	}
 
+	executor := ci.NewExecutor(ws)
+	output, err := executor.RunDefault(ctx)
+	if err != nil {
+		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"repository":          body.URL,
 		"branch":              ws.Branch(),
 		"commit":              ws.Commit(),
 		"workspace_directory": ws.Dir(),
+		"result":              fmt.Sprintf("Successfully executed pipeline.\n\n%s", output),
 	})
 }

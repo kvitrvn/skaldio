@@ -1,0 +1,8 @@
+name: my pipeline
+steps:
+- name: dependencies
+  commands:
+  - go mod download
+- name: tests
+  commands:
+  - make test
