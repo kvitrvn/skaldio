@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	"gopkg.in/yaml.v3"
 )
 
@@ -26,11 +27,21 @@ func NewWorkspace(root, url, branch string) (*Workspace, error) {
 		return nil, err
 	}
 
+	var publicKey *ssh.PublicKeys
+	// TODO: define ssh path as configuration value
+	sshPath := os.Getenv("HOME") + "/.ssh/XXXX"
+	sshKey, _ := os.ReadFile(sshPath)
+	publicKey, err = ssh.NewPublicKeys("git", sshKey, "")
+	if err != nil {
+		return nil, err
+	}
+
 	repo, err := git.PlainClone(dir, false, &git.CloneOptions{
 		URL:               url,
 		ReferenceName:     plumbing.NewBranchReferenceName(branch),
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 		Depth:             1,
+		Auth:              publicKey,
 	})
 	if err != nil {
 		if err := os.RemoveAll(dir); err != nil {

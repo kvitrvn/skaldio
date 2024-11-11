@@ -1,7 +1,7 @@
 APP_SERVER = server
 BUILD_DIR = $(PWD)/bin
 
-.PHONY: test bench run-web
+.PHONY: test bench run
 
 server:
 	@go build -o $(BUILD_DIR)/$(APP_SERVER) .
